@@ -30,7 +30,7 @@ mkup --default-extension <.extension>
 # Change the default extension.
 ```
 
-####version
+#### version
 ```
 mkup.22.12.17
 ```
