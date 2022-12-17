@@ -1,7 +1,7 @@
 # mkup
 mkup - fast update or create a makefile
 
-Automatically searches and updates source files (C++)
+Automatically searches and updates source files. (C++)
 
 #### installation
 ```
@@ -11,18 +11,18 @@ Automatically searches and updates source files (C++)
 #### usage
 ```
 mkup
-# update a makefile in your current folder
+# Update or create a makefile in your current folder.
 ```
 ```
 mkup [DIRECTORY]
-# otherwise you can specify a relative directory path
-# default source directory is 'DIRECTORY/src'
+# Otherwise you can specify a relative directory path,
+# the default source directory is 'DIRECTORY/src'
 ```
 
 #### options
 ```
 mkup  -s, --source-dir <src_dir> [DIRECTORY]
-# Specify the source directory, subfolders allowed
+# Specify the source directory, subfolders allowed.
 ```
 ```
 mkup --default-source-dir <src_dir>
