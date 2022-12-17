@@ -136,7 +136,7 @@ function	usage() {
 	echo
 	echo "OPTIONS"
 	echo "    -h, --help"
-	echo "           Print the usage and exit."
+	echo "           Print this help and exit."
 	echo
 	echo "    -s, --source-dir <src_dir>"
 	echo "           Specify the source directory, subfolders allowed"
