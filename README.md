@@ -11,20 +11,17 @@ Automatically searches and updates source files (C++)
 #### usage
 ```
 mkup
-# if your makefile is in your current folder, 
+# update a makefile in your current folder
 ```
 ```
-mkup [OPTION] [DIRECTORY]
-```
-
-```
-default extension is '.cpp'
-default source directory is 'DIRECTORY/src'
+mkup [DIRECTORY]
+# otherwise you can specify a relative directory path
+# default source directory is 'DIRECTORY/src'
 ```
 
 #### options
 ```
-mkup  -s, --source-dir <src_dir>
+mkup  -s, --source-dir <src_dir> [DIRECTORY]
 # Specify the source directory, subfolders allowed
 ```
 ```
