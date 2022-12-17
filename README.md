@@ -1,5 +1,5 @@
 # mkup
-mkup - update or create a makefile
+mkup - update or create a makefile (c++)
 
 #### installation
 ```
