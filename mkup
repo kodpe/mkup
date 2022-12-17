@@ -3,7 +3,7 @@
 
 ################################################################################
 ### OPTIONS SAVES /!\ DO NOT CHANGE LINE NUMBERS
-SRC_DIR="." #L6
+SRC_DIR="src" #L6
 EXTENSION=".cpp" #L7
 COMPILER="c++ -Wall -Werror -Wextra -std=c++98" #L8
 
