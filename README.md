@@ -1,5 +1,5 @@
 # mkup
-mkup - update or create a makefile (C++)
+mkup - fast update or create a makefile (for C++)
 
 #### installation
 ```
