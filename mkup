@@ -1,0 +1,386 @@
+#!/bin/bash
+# Written by Kodp sloquet@student.42.fr
+
+################################################################################
+### OPTIONS SAVES /!\ DO NOT CHANGE LINE NUMBERS
+SRC_DIR="." #L6
+EXTENSION=".cpp" #L7
+COMPILER="c++ -Wall -Werror -Wextra -std=c++98" #L8
+
+#SRC_DIR="src"		# /!\ DO NOT CHANGE LINE NUMBER
+#EXTENSION=".cpp"	# /!\ DO NOT CHANGE LINE NUMBER
+#COMMAND="c++ -Wall -Werror -Wextra -std=c++98" # /!\ DO NOT CHANGE LINE NB 8
+
+MKUP_PATH="$HOME/.local/mkup"
+# mkup templates
+MKUP_TP_CPP="$HOME/.local/mkup_tp_makefile_cpp"
+
+################################################################################
+### MAKEFILE TEMPLATE CPP
+function create_template_cpp() {
+cat << EOF > $MKUP_TP_CPP
+#-mkup-auto-sources-###############################################542251121222#
+SRC_DIR		=	"$SRC_DIR"
+EXTENSION	=	"$EXTENSION"
+SRC_LIST	=	\$(addsuffix \$(EXTENSION), \\
+				main \\
+				)
+SRC			=	\$(addprefix \$(SRC_DIR)/, \$(SRC_LIST))
+#-mkup-auto-sources-###############################################542251121222#
+
+INC_DIR		= 	inc
+OBJ_DIR		=	obj
+OBJ			=	\$(addprefix \$(OBJ_DIR)/, \$(SRC_LIST:\$(EXTENSION)=.o))
+
+CC			=	@c++
+CFLAGS		= 	-Wall -Werror -Wextra -std=c++98 -I \$(INC_DIR)
+
+RM			= 	@rm -rf
+NOPR		= 	--no-print-directory
+
+cw			=	"\033[0m"
+cr			=	"\033[31m"
+cg			=	"\033[32m"
+cb			=	"\033[34m"
+cp			=	"\033[35m"
+
+NAME		= 	program_name
+
+######################################################################
+\$(OBJ_DIR)/%.o:\$(SRC_DIR)/%.cpp
+			@mkdir -p \$(dir \$@)
+			\$(CC) \$(CFLAGS) -c $< -o \$@
+#\\
+
+			@echo \$(cg)"(@) "\$@" (<) "$< \$(cw)
+
+\$(NAME):	\$(OBJ)
+			\$(CC) \$(CFLAGS) -o \$(NAME) \$(SRC)
+			@echo \$(cg)\$(NAME)\$(cw)
+
+all:		\$(NAME)
+
+clean:
+			\$(RM) \$(OBJ_DIR)
+			@echo -n \$(cr)
+			@echo \$(OBJ) | tr ' ' '\n'
+			@echo -n \$(cw)
+
+fclean:
+			make -s -j clean
+			\$(RM) \$(NAME)
+			@echo \$(cr)\$(NAME)\$(cw)
+
+re:			fclean
+			make -s -j all
+
+run:
+			make -s -j all
+			./\$(NAME)
+
+verbose:
+			@echo \$(cp)"SRC_DIR  : "\$(SRC_DIR)
+			@echo \$(cp)"EXTENSION: "\$(EXTENSION)
+			@echo \$(cp)"SRC_LIST : "\$(SRC_LIST)
+			@echo \$(cp)"SRC      : "\$(SRC)
+			@echo -n \$(cb) && ls -CRAB \$(SRC_DIR)/* ||true
+			@echo
+			@echo \$(cp)"INC_DIR  : "\$(INC_DIR)
+			@echo -n \$(cb) && ls -CRAB \$(INC_DIR)/* ||true
+			@echo
+			@echo \$(cp)"OBJ_DIR  : "\$(OBJ_DIR)
+			@echo \$(cp)"OBJ      : "\$(OBJ)
+			@echo -n \$(cb) && ls -CRAB \$(OBJ_DIR)/*.o ||true
+
+			@echo
+			@echo \$(cp)"DEPS     : "\$(DEPS)
+			@echo -n \$(cb) && ls -CRAB \$(OBJ_DIR)/*.d ||true
+			@echo
+			@echo \$(cp)"CC       : "\$(CC)
+			@echo \$(cp)"CFLAGS   : "\$(CFLAGS)
+			@echo \$(cp)"NAME     : "\$(NAME)
+			@echo -n \$(cw)
+
+DEPS		=	\$(OBJ:.o=.d)
+ifneq (\$(DEPS),)
+-include \$(DEPS)
+endif
+
+.PHONY:		all clean fclean re run verbose
+.SILENT: 	all clean fclean re run verbose \$(NAME)
+
+EOF
+}
+
+################################################################################
+### UTILS FUNCTIONS
+function	msg_fail() { echo -e "MKUP:ERROR:$1" ; }
+function	msg_done() { echo -e "MKUP:$1" ; }
+function	msg_warn() { echo -e "MKUP:$1" ; }
+function	msg_info() { echo -e "MKUP:$1" ; }
+function	usage() {
+	echo "Usage: mkup [OPTION] [DIRECTORY]"
+	echo
+	echo "Update or create a makefile"
+	echo
+	echo "NOTES"
+	echo "    <> The compilation command used is:"
+	echo "       '$COMPILER'"
+	echo
+	echo "    <> If DIRECTORY isnt specified, default DIRECTORY is '.'"
+	echo
+	echo "    <> The makefile uses two mkup tokens like this one:"
+	echo "       '#-mkup-auto-sources ...',"
+	echo "       which contain all the source files,"
+	echo "       for safety makefiles without keys will be ignored."
+	echo
+	echo "OPTIONS"
+	echo "    -h, --help"
+	echo "           Print the usage and exit."
+	echo
+	echo "    -s, --source-dir <src_dir>"
+	echo "           Specify the source directory, subfolders allowed"
+	echo
+	echo "    --default-source-dir <src_dir>"
+	echo "           Change the default source directory and exit."
+	echo "           Actually is 'DIRECTORY/$SRC_DIR'"
+	echo
+	echo "    --default-extension <.extension>"
+	echo "           Change the default extension and exit."
+	echo "           Actually is '$EXTENSION'"
+	echo
+	echo "VERSION"
+	echo "    mkup.22.12.17"
+	echo
+	echo "AUTHOR"
+	echo "    @Kodp sloquet@student.42.fr"
+	echo
+}
+
+################################################################################
+### OPTIONS HANDLER
+
+ARG_DIRECTORY=$1
+if [[ "${1:0:1}" == "-"  ]]; then
+	ARG_DIRECTORY=$3
+fi
+
+if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+	usage
+	exit 0
+fi
+
+if [[ "$1" == "--default-source-dir" ]]; then
+	msg_info "default-source-dir set on '$2'"
+	sed -i "6s+.*+SRC_DIR=\"$2\" #L6+" $0
+	exit 0
+fi
+
+if [[ "$1" == "--default-extension" ]]; then
+	msg_info "default-extension set on '$2'"
+	sed -i "7s+.*+EXTENSION=\"$2\" #L7+" $0
+	exit 0
+fi
+
+#if [[ "$1" == "--def-compiler" ]]; then
+#	msg_info "default-compiler set on '$2'"
+#	sed -i "8s+.*+COMPILER=\"$2\" #L8+" $0
+#	exit 0
+#fi
+
+if [[ "${1:0:1}" == "-" ]]; then
+	if [[ "$1" == "--source-dir" || "$1" == "-s" ]]; then
+		SRC_DIR="$2"
+	else
+		usage
+		exit 1
+	fi
+fi
+
+### BUG WITH HOME TODO
+if [[ "$PWD" == "$HOME" ]]; then #FIX BUG WITH SRC_DIR = . if executed in HOME
+	if [[ "$SRC_DIR" == "." ]]; then
+		msg_fail "pwd:home error, src_dir == '.', invalid localisation"
+		exit 1
+	fi
+fi
+
+################################################################################
+### CREATE SOURCE HEADER
+SRC_DIR="${SRC_DIR%/}" # remove last '/'
+SRC_HEAD="\
+SRC_DIR\t\t=\t$SRC_DIR\n\
+
+EXTENSION\t=\t\"$EXTENSION\"\n\
+SRC_LIST\t=\t\$(addsuffix \$(EXTENSION), \\"
+SRC_END="\
+SRC\t\t\t=\t\$(addprefix \$(SRC_DIR)/, \$(SRC_LIST))"
+
+################################################################################
+### GET ARG MAKEFILE PATH
+MAKEPATH="${ARG_DIRECTORY%/}" # remove last '/'
+if [[ -z $MAKEPATH ]]; then
+	MAKEPATH="."
+fi
+MAKEFILE="$MAKEPATH/Makefile"
+FINDPATH="$MAKEPATH/$SRC_DIR/"
+
+# debug
+# echo "EXTENSION:$EXTENSION"
+# echo "SRC_DIR  :$SRC_DIR"
+# echo "SRC_HEAD :$SRC_HEAD"
+# echo "MAKEPATH :$MAKEPATH"
+# echo "FINDPATH :$FINDPATH"
+# echo "MAKEFILE :$MAKEFILE"
+# DEPTH=$(tr -dc '/' <<< $MAKEPATH | wc -c)
+#echo $DEPTH
+
+
+################################################################################
+### AUTO ALIAS SETUP
+function	setup_alias() {
+
+	if [[ ! -f ~/.zshrc ]]; then
+		msg_fail "zsh: .zshrc not found"
+		return ;
+	fi
+
+	if ! grep -q "mkup" ~/.zshrc; then
+		echo "# mkup - auto update or create a makefile" >> ~/.zshrc
+		echo 'alias mkup="~/.local/mkup"' >> ~/.zshrc
+	fi
+
+	if [ ! -d "$HOME/.local" ]; then
+		if mkdir ~/.local; then
+			msg_fail "mkdir: install failed"
+			return ;
+		fi
+	fi
+
+	if [[ ! -e $MKUP_PATH ]]; then
+		if ! cp $0 $MKUP_PATH; then
+			msg_fail "cp: install failed"
+			return ;
+		fi
+
+		if ! chmod +x $HOME/.local/mkup; then
+			msg_fail "chmod: install failed"
+			return ;
+		fi
+		usage
+		rm $0 # install success
+		exec zsh
+		exit 0
+	fi
+
+	if [[ ! -f $MKUP_TP_CPP ]]; then
+		create_template_cpp
+	fi
+}
+setup_alias
+
+################################################################################
+### DIRECTORIES CHECK
+if [[ ! -d $MAKEPATH ]]; then
+	msg_info "'$PWD/$MAKEPATH'"
+	msg_fail "invalid directory '$MAKEPATH'\n"
+	usage
+	exit 1
+fi
+
+if [[ ! -d $FINDPATH ]]; then
+	TMP_FINDPATH=$(echo $FINDPATH | sed -e "s#\./##")
+	msg_info "'$PWD/$TMP_FINDPATH'"
+	msg_info "invalid directory '$TMP_FINDPATH'"
+fi
+
+################################################################################
+###  GET SOURCE FILES
+TAB4="\t\t\t\t"
+FILES=$(find "$FINDPATH" -name "*$EXTENSION" 2>/dev/null |
+		sed -e "s/$EXTENSION$//" | \
+		sed -e 's/$/ \\/' |
+		sed -e "s#$MAKEPATH\/$SRC_DIR\/#$TAB4#")
+if [[ -z $FILES ]]; then
+	#msg_info "no source files  :'$EXTENSION' found in '$FINDPATH'"
+	FILES="			__MKUP_NO_SOURCE_FOUND__ \\"
+fi
+
+################################################################################
+### CHECK FOR MAKEFILE
+
+if [[ ! -e $MAKEFILE ]]; then
+	msg_fail "makefile not found"
+	read -p "do you want to create a new makefile [y/n]? " -n 1 -r
+	if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+		echo
+		exit 1
+	fi
+	echo
+	msg_info "create a new makefile..."
+	if [[ ! -d $FINDPATH ]]; then
+		msg_info "create a source directory..."
+		if ! mkdir $FINDPATH; then
+			msg_fail "can't create a new source directory here"
+			msg_fail "mkdir $FINDPATH"
+			exit 1
+		fi
+	fi
+	msg_info "sources directory: $FINDPATH*$EXTENSION"
+	PUT_MAKEFILE=$(echo $MAKEFILE | sed -e "s#\./##")
+
+	if cp $MKUP_TP_CPP $MAKEFILE; then
+		msg_done "makefile created :$PWD/$PUT_MAKEFILE"
+	else
+		msg_fail "can't create a new makefile here"
+		msg_fail "cp $MKUP_TP_CPP $MAKEFILE"
+		exit 1
+	fi
+fi
+
+################################################################################
+### CHECK FOR MAKEFILE MKUP KEYS
+KEY="mkup-auto-sources"
+ID=$(date +%S%H%M%d%m%y)
+REF=$(cat -n $MAKEFILE | grep "\-$KEY\-" | awk '{print $1}')
+if [[ ! $(echo $REF | wc -w) -eq 2 ]]; then
+	msg_fail "invalid makefile mkup token '#-$KEY-'"
+	usage
+	exit 1
+fi
+
+################################################################################
+# GET UNCHANGED PART OF MAKEFILE
+TOP=$(cat $MAKEFILE | head -$(($(echo $REF | awk '{print $1}') - 1)))
+BOT=$(cat $MAKEFILE | tail +$(($(echo $REF | awk '{print $2}') + 1)))
+
+################################################################################
+### CREATE NEW MAKEFILE
+echo -n "$TOP" >$MAKEFILE
+echo "#-$KEY-###############################################$ID#" >>$MAKEFILE
+echo -e "$SRC_HEAD" >>$MAKEFILE
+echo "$FILES" >>$MAKEFILE
+echo -e "\t\t\t\t)" >>$MAKEFILE
+echo -e "$SRC_END" >> $MAKEFILE
+echo "#-$KEY-###############################################$ID#" >>$MAKEFILE
+echo "$BOT" >>$MAKEFILE
+
+################################################################################
+### EXIT SUCCESS
+MSG_MAKEFILE=$(echo $MAKEFILE | sed -e "s#\./##")
+MSG_FINDPATH=$(echo $FINDPATH | sed -e "s#\./##")
+msg_done "makefile updated :$PWD/$MSG_MAKEFILE"
+msg_done "sources files    :$PWD/$MSG_FINDPATH**$EXTENSION"
+
+################################################################################
+###  GET SOURCE FILES LAST REPORT
+TAB4="\t\t\t\t"
+FILES=$(find "$FINDPATH" -name "*$EXTENSION" |
+		sed -e "s/$EXTENSION$//" | \
+		sed -e 's/$/ \\/' |
+		sed -e "s#$MAKEPATH\/$SRC_DIR\/#$TAB4#")
+if [[ -z $FILES ]]; then
+	msg_info "no source files  :'$EXTENSION' found in '$FINDPATH'"
+fi
+msg_done "Done!"
+exit 0
