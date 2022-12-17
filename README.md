@@ -1,5 +1,7 @@
 # mkup
-mkup - fast update or create a makefile (for C++)
+mkup - fast update or create a makefile
+
+Automatically searches and updates source files (C++)
 
 #### installation
 ```
@@ -7,6 +9,10 @@ mkup - fast update or create a makefile (for C++)
 ```
 
 #### usage
+```
+mkup
+# if your makefile is in your current folder, 
+```
 ```
 mkup [OPTION] [DIRECTORY]
 ```
