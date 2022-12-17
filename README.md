@@ -29,3 +29,8 @@ mkup --default-source-dir <src_dir>
 mkup --default-extension <.extension>
 # Change the default extension.
 ```
+
+####version
+```
+mkup.22.12.17
+```
