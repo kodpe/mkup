@@ -1,5 +1,5 @@
 # mkup
-mkup - fast update or create a makefile
+mkup - fast update or create a makefile (42 proof)
 
 Automatically searches and updates source files. (C++)
 
