@@ -3,7 +3,7 @@
 
 ################################################################################
 ### OPTIONS SAVES /!\ DO NOT CHANGE LINE NUMBERS
-SRC_DIR="src" #L6
+SRC_DIR="." #L6
 EXTENSION=".cpp" #L7
 COMPILER="c++ -Wall -Werror -Wextra -std=c++98" #L8
 
@@ -28,7 +28,7 @@ SRC_LIST	=	\$(addsuffix \$(EXTENSION), \\
 SRC			=	\$(addprefix \$(SRC_DIR)/, \$(SRC_LIST))
 #-mkup-auto-sources-###############################################542251121222#
 
-INC_DIR		= 	inc
+INC_DIR		= 	.
 OBJ_DIR		=	obj
 OBJ			=	\$(addprefix \$(OBJ_DIR)/, \$(SRC_LIST:\$(EXTENSION)=.o))
 
