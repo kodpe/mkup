@@ -32,8 +32,12 @@ mkup --default-source-dir <src_dir>
 mkup --default-extension <.extension>
 # Change the default extension.
 ```
+```
+mkup  -c, --class <name>
+# Create a cpp class files.
+```
 
 #### version
 ```
-mkup.22.12.17
+mkup.22.12.23
 ```
