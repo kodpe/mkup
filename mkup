@@ -272,7 +272,7 @@ fi
 
 if [[ "$1" == "--class" || "$1" == "-c" ]]; then
 	create_class_cpp $2
-	./$0
+	.$0
 	exit 0
 fi
 
