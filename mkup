@@ -247,7 +247,7 @@ function	usage() {
 	echo "           Actually is '$EXTENSION'"
 	echo
 	echo "    -c, --class <name>"
-	echo "           Create a cpp class <name> and update the makefile."
+	echo "           Create a cpp class <name> and exit."
 	echo
 	echo "VERSION"
 	echo "    mkup.22.12.23"
@@ -272,7 +272,6 @@ fi
 
 if [[ "$1" == "--class" || "$1" == "-c" ]]; then
 	create_class_cpp $2
-	.$0
 	exit 0
 fi
 
