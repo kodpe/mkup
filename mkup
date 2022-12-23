@@ -16,6 +16,106 @@ MKUP_PATH="$HOME/.local/mkup"
 MKUP_TP_CPP="$HOME/.local/mkup_tp_makefile_cpp"
 
 ################################################################################
+### CLASS TEMPLATE CPP
+function create_class_cpp() {
+	local SNAME="MKUP"
+	local CLASSNAME="$1"
+	local CLASSNAME_UP="${1^^}_H"
+
+	if [[ -z $CLASSNAME ]]; then
+		echo "$SNAME:ERROR:need an argument for the class name"
+		exit 1
+	fi
+
+	if [[ -f "NAME.hpp" || -f "NAME.cpp" ]]; then
+		echo "$SNAME:ERROR:NAME.hpp/.cpp already exist"
+		exit 1
+	fi
+
+	if [[ -f "$CLASSNAME.hpp" || -f "$CLASSNAME.cpp" ]]; then
+		echo "$SNAME:ERROR:$CLASSNAME.hpp/.cpp already exist"
+		exit 1
+	fi
+
+	echo "$SNAME:'$PWD'"
+	echo "$SNAME:create a class '$CLASSNAME' ..."
+
+	echo "'$CLASSNAME_UP'"
+	# exit 0
+
+	cat << EOF > NAME.hpp
+#ifndef NAME_H
+# define NAME_H
+
+#include <iostream>
+#include <string>
+
+class NAME
+{
+	public:
+		NAME (void);
+		NAME (/* TODO constructor with arguments */);
+   	   ~NAME ();
+		// NAME (const NAME&);					/* recopy constructor	*/
+		// NAME &operator=(const NAME&); 		/* affectation operator */
+
+		/* accesseurs et mutateurs (setter and getter) */
+
+		/* méthodes publiques */
+
+	private:
+		/* variables _var */
+
+		/* méthodes privées _func */
+
+	// protected:
+
+};
+
+#endif /* NAME_H */
+
+EOF
+	sed "s/NAME_H/$CLASSNAME_UP/g" NAME.hpp > $CLASSNAME.hpp
+	sed -i "s/NAME/$CLASSNAME/g" $CLASSNAME.hpp
+	rm NAME.hpp
+
+	cat << EOF > NAME.cpp
+#include <iostream>
+#include <string>
+#include "NAME.hpp"
+
+NAME::NAME(void)
+{
+}
+
+NAME::~NAME(/* TODO constructor with arguments */)
+{
+}
+
+/**
+ * accesseurs et mutateurs (setter and getter)
+ */
+//void	NAME::set_()
+//void	NAME::get_()
+
+/**
+ * public methods
+ */
+//void	NAME::()
+
+/**
+ * private methods
+ */
+//void	NAME::_()
+
+EOF
+	sed "s/NAME/$CLASSNAME/g" NAME.cpp > $CLASSNAME.cpp
+	rm NAME.cpp
+
+	echo "$SNAME:new class '$CLASSNAME.hpp' '$CLASSNAME'.cpp done!"
+}
+
+################################################################################
 ### MAKEFILE TEMPLATE CPP
 function create_template_cpp() {
 cat << EOF > $MKUP_TP_CPP
@@ -149,8 +249,11 @@ function	usage() {
 	echo "           Change the default extension and exit."
 	echo "           Actually is '$EXTENSION'"
 	echo
+	echo "    -c, --class <name>"
+	echo "           Create a cpp class <name> and update the makefile."
+	echo
 	echo "VERSION"
-	echo "    mkup.22.12.17"
+	echo "    mkup.22.12.23"
 	echo
 	echo "AUTHOR"
 	echo "    @Kodp sloquet@student.42.fr"
@@ -167,6 +270,12 @@ fi
 
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
 	usage
+	exit 0
+fi
+
+if [[ "$1" == "--class" || "$1" == "-c" ]]; then
+	create_class_cpp $2
+	./$0
 	exit 0
 fi
 
