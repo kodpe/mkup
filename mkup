@@ -488,5 +488,8 @@ FILES=$(find "$FINDPATH" -name "*$EXTENSION" |
 if [[ -z $FILES ]]; then
 	msg_info "no source files  :'$EXTENSION' found in '$FINDPATH'"
 fi
+if [[ -f $MKUP_TP_CPP ]]; then
+	rm $MKUP_TP_CPP
+fi
 msg_done "Done!"
 exit 0
