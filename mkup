@@ -40,9 +40,6 @@ function create_class_cpp() {
 	echo "$SNAME:'$PWD'"
 	echo "$SNAME:create a class '$CLASSNAME' ..."
 
-	echo "'$CLASSNAME_UP'"
-	# exit 0
-
 	cat << EOF > NAME.hpp
 #ifndef NAME_H
 # define NAME_H
