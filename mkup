@@ -45,6 +45,7 @@ function create_class_cpp() {
 # define NAME_H
 
 #include <iostream>
+#include <string>
 
 class NAME
 {
