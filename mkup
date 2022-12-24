@@ -45,7 +45,6 @@ function create_class_cpp() {
 # define NAME_H
 
 #include <iostream>
-#include <string>
 
 class NAME
 {
@@ -77,8 +76,6 @@ EOF
 	rm NAME.hpp
 
 	cat << EOF > NAME.cpp
-#include <iostream>
-#include <string>
 #include "NAME.hpp"
 
 NAME::NAME(void)
@@ -188,9 +185,6 @@ val:
 			--leak-check=full		\\
 			./\$(NAME)
 
-reval:		fclean
-			make -s -j val
-
 verbose:
 			@echo \$(cp)"SRC_DIR  : "\$(SRC_DIR)
 			@echo \$(cp)"EXTENSION: "\$(EXTENSION)
@@ -217,8 +211,8 @@ verbose:
 DEPS		=	\$(OBJ:.o=.d)
 -include \$(DEPS)
 
-.PHONY:		all clean fclean re run val reval verbose
-.SILENT: 	all clean fclean re run val reval verbose \$(NAME)
+.PHONY:		all clean fclean re run val verbose
+.SILENT: 	all clean fclean re run val verbose \$(NAME)
 
 EOF
 }
@@ -273,8 +267,6 @@ function	usage() {
 	echo "                --show-leak-kinds=all"
 	echo "                --track-origins=yes"
 	echo "                --leak-check=full"
-	echo
-	echo "     reval   : re + val"
 	echo
 	echo "     verbose : display makefile parameters"
 	echo
