@@ -24,17 +24,17 @@ function create_class_cpp() {
 
 	if [[ -z $CLASSNAME ]]; then
 		echo "$SNAME:ERROR:need an argument for the class name"
-		exit 1
+		return 1
 	fi
 
 	if [[ -f "NAME.hpp" || -f "NAME.cpp" ]]; then
 		echo "$SNAME:ERROR:NAME.hpp/.cpp already exist"
-		exit 1
+		return 1
 	fi
 
 	if [[ -f "$CLASSNAME.hpp" || -f "$CLASSNAME.cpp" ]]; then
 		echo "$SNAME:ERROR:$CLASSNAME.hpp/.cpp already exist"
-		exit 1
+		return 1
 	fi
 
 	echo "$SNAME:'$PWD'"
@@ -180,13 +180,22 @@ run:
 			make -s -j all
 			./\$(NAME)
 
-valgrind:
+val:
 			make -s -j all
 			valgrind				\\
 			--show-leak-kinds=all	\\
 			--track-origins=yes		\\
 			--leak-check=full		\\
 			./\$(NAME)
+
+reval:		fclean
+			make -s -j all
+			valgrind				\\
+			--show-leak-kinds=all	\\
+			--track-origins=yes		\\
+			--leak-check=full		\\
+			./\$(NAME)
+
 
 verbose:
 			@echo \$(cp)"SRC_DIR  : "\$(SRC_DIR)
@@ -214,8 +223,8 @@ verbose:
 DEPS		=	\$(OBJ:.o=.d)
 -include \$(DEPS)
 
-.PHONY:		all clean fclean re run verbose val
-.SILENT: 	all clean fclean re run verbose val \$(NAME)
+.PHONY:		all clean fclean re run val reval verbose
+.SILENT: 	all clean fclean re run val reval verbose \$(NAME)
 
 EOF
 }
@@ -247,7 +256,7 @@ function	usage() {
 	echo "           Print this help and exit."
 	echo
 	echo "    -s, --source-dir <src_dir>"
-	echo "           Specify the source directory, subfolders allowed"
+	echo "           Specify the source directory, subfolders allowed."
 	echo
 	echo "    --default-source-dir <src_dir>"
 	echo "           Change the default source directory and exit."
@@ -257,11 +266,26 @@ function	usage() {
 	echo "           Change the default extension and exit."
 	echo "           Actually is '$EXTENSION'"
 	echo
-	echo "    -c, --class <name>"
+	echo "    -c, --class <name> ..."
 	echo "           Create a cpp class <name> and exit."
+	echo "           Can create multiple classes: <name1> <name2> ..."
+	echo
+	echo "MAKEFILE RULES"
+	echo "     all, clean, fclean, re"
+	echo
+	echo "     run     : make and execute"
+	echo
+	echo "     val     : make and execute with valgrind"
+	echo "                --show-leak-kinds=all"
+	echo "                --track-origins=yes"
+	echo "                --leak-check=full"
+	echo
+	echo "     reval   : re + val"
+	echo
+	echo "     verbose : display makefile parameters"
 	echo
 	echo "VERSION"
-	echo "    mkup.22.12.23"
+	echo "    mkup.22.12.24"
 	echo
 	echo "AUTHOR"
 	echo "    @Kodp sloquet@student.42.fr"
@@ -282,7 +306,9 @@ if [[ "$1" == "--help" || "$1" == "-h" ]]; then
 fi
 
 if [[ "$1" == "--class" || "$1" == "-c" ]]; then
-	create_class_cpp $2
+	for ((i = 2; i <= $#; i++)); do
+		create_class_cpp ${!i}
+	done
 	exit 0
 fi
 
