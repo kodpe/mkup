@@ -189,13 +189,7 @@ val:
 			./\$(NAME)
 
 reval:		fclean
-			make -s -j all
-			valgrind				\\
-			--show-leak-kinds=all	\\
-			--track-origins=yes		\\
-			--leak-check=full		\\
-			./\$(NAME)
-
+			make -s -j val
 
 verbose:
 			@echo \$(cp)"SRC_DIR  : "\$(SRC_DIR)
