@@ -52,7 +52,7 @@ class NAME
 	public:
 		NAME (void);
 		NAME (/* TODO constructor with arguments */);
-   	   ~NAME ();
+   	   ~NAME (void);
 		// NAME (const NAME&);					/* recopy constructor	*/
 		// NAME &operator=(const NAME&); 		/* affectation operator */
 
@@ -85,7 +85,11 @@ NAME::NAME(void)
 {
 }
 
-NAME::~NAME(/* TODO constructor with arguments */)
+NAME::NAME(/* TODO constructor with arguments */)
+{
+}
+
+NAME::~NAME(void)
 {
 }
 
@@ -135,6 +139,7 @@ CFLAGS		= 	-Wall -Werror -Wextra -std=c++98 -I \$(INC_DIR)
 RM			= 	@rm -rf
 NOPR		= 	--no-print-directory
 
+#colors
 cw			=	"\033[0m"
 cr			=	"\033[31m"
 cg			=	"\033[32m"
@@ -175,6 +180,14 @@ run:
 			make -s -j all
 			./\$(NAME)
 
+valgrind:
+			make -s -j all
+			valgrind				\\
+			--show-leak-kinds=all	\\
+			--track-origins=yes		\\
+			--leak-check=full		\\
+			./\$(NAME)
+
 verbose:
 			@echo \$(cp)"SRC_DIR  : "\$(SRC_DIR)
 			@echo \$(cp)"EXTENSION: "\$(EXTENSION)
@@ -199,12 +212,10 @@ verbose:
 			@echo -n \$(cw)
 
 DEPS		=	\$(OBJ:.o=.d)
-ifneq (\$(DEPS),)
 -include \$(DEPS)
-endif
 
-.PHONY:		all clean fclean re run verbose
-.SILENT: 	all clean fclean re run verbose \$(NAME)
+.PHONY:		all clean fclean re run verbose val
+.SILENT: 	all clean fclean re run verbose val \$(NAME)
 
 EOF
 }
