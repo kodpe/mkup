@@ -132,7 +132,7 @@ OBJ_DIR		=	obj
 OBJ			=	\$(addprefix \$(OBJ_DIR)/, \$(SRC_LIST:\$(EXTENSION)=.o))
 
 CC			=	@c++
-CFLAGS		= 	-Wall -Werror -Wextra -std=c++98 -I \$(INC_DIR)
+CFLAGS		= 	-Wall -Werror -Wextra -std=c++98 -MMD -I \$(INC_DIR)
 
 RM			= 	@rm -rf
 NOPR		= 	--no-print-directory
@@ -162,6 +162,7 @@ all:		\$(NAME)
 
 clean:
 			\$(RM) \$(OBJ_DIR)
+			\$(RM) \$(NAME).d
 			@echo -n \$(cr)
 			@echo \$(OBJ) | tr ' ' '\n'
 			@echo -n \$(cw)
