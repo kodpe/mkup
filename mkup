@@ -308,7 +308,7 @@ function	usage() {
 	echo "     verbose : display makefile parameters"
 	echo
 	echo "VERSION"
-	echo "    mkup.23.01.01"
+	echo "    mkup.23.01.01+"
 	echo
 	echo "AUTHOR"
 	echo "    @Kodp sloquet@student.42.fr"
