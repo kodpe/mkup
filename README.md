@@ -29,5 +29,5 @@ mkup [OPTION]... [DIRECTORY]
 
 #### version
 ```
-mkup.23.01.01
+mkup.23.01.02
 ```
