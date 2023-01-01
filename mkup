@@ -245,7 +245,7 @@ function	msg_fail() { echo -e "MKUP:ERROR:$1" ; }
 function	msg_done() { echo -e "MKUP:$1" ; }
 function	msg_warn() { echo -e "MKUP:$1" ; }
 function	msg_info() { echo -e "MKUP:$1" ; }
-function	usage() {
+function	mkup_usage() {
 	echo "Usage: mkup [OPTION]... [DIRECTORY]"
 	echo "       mkup -c CLASSNAME..."
 	echo
@@ -314,6 +314,13 @@ function	usage() {
 	echo "    @Kodp sloquet@student.42.fr"
 	echo
 }
+
+function	usage() {
+	mkup_usage > /tmp/mkup_man
+	more /tmp/mkup_man
+	rm -f /tmp/mkup_man
+}
+
 
 ################################################################################
 ### OPTIONS HANDLER
