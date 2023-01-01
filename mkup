@@ -13,6 +13,7 @@ EXEC_NAME="exec_name" #L9
 #COMMAND="c++ -Wall -Werror -Wextra -std=c++98" # /!\ DO NOT CHANGE LINE NB 8
 #XEC_NAME="program_name" # /!\ DO NOT CHANGE LINE NUMBER #L9
 
+################################################################################
 MKUP_PATH="$HOME/.local/mkup"
 # mkup templates
 MKUP_TP_CPP="$HOME/.local/mkup_tp_makefile_cpp"
@@ -22,9 +23,19 @@ MKUP_TP_CPP="$HOME/.local/mkup_tp_makefile_cpp"
 function	mkup_uninstall() {
 	cp "$HOME/.zshrc" "$HOME/.zshrc_mkup_backup"
 	sed -i '/mkup/d' "$HOME/.zshrc"
-	rm -r "$MKUP_PATH"
-	# rm -rf "$MKUP_PATH"
+	rm -rf "$MKUP_PATH" 2>/dev/null
 }
+
+if [[ "$0" != $MKUP_PATH ]]; then
+	mkup_uninstall
+fi
+
+function	mkup_update() {
+	git clone git@github.com:kodpe/mkup.git mkup_update_08231
+	./mkup_update_08231/mkup && rm -rf ./mkup_update_08231
+	echo "MKUP:mkup update done"
+}
+# mkup_update
 
 ################################################################################
 ### CLASS TEMPLATE CPP
@@ -438,7 +449,7 @@ function	setup_alias() {
 			return ;
 		fi
 
-		if ! chmod +x $HOME/.local/mkup; then
+		if ! chmod +x $MKUP_PATH; then
 			msg_fail "chmod: install failed"
 			return ;
 		fi
