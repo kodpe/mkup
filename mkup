@@ -53,18 +53,17 @@ class NAME
 {
 	public:
 		NAME ();
-		NAME (const std::string& name);
-		NAME (const NAME& other);
+		NAME (const std::string &name);
+		NAME (const NAME &other);
    	   ~NAME ();
-		NAME&	operator=(const NAME& other);
+		NAME & operator=(const NAME &other);
 
 	private:
-		std::string		_name;
+		std::string	_name;
 	protected:
 };
 
 #endif /* NAME_CLASS_HPP */
-
 EOF
 	sed "s/NAME_CLASS_HPP/$CLASSNAME_UP/g" NAME.hpp > $CLASSNAME.hpp
 	sed -i "s/NAME/$CLASSNAME/g" $CLASSNAME.hpp
@@ -78,12 +77,12 @@ NAME::NAME() : _name("default")
 	std::cout << "NAME default constructor" << std::endl;
 }
 
-NAME::NAME(const std::string& name) : _name(name)
+NAME::NAME(const std::string &name) : _name(name)
 {
 	std::cout << "NAME constructor" << std::endl;
 }
 
-NAME::NAME(const NAME& other)
+NAME::NAME(const NAME &other)
 {
 	std::cout << "NAME copy constructor from " << other._name << std::endl;
 	*this = other;
@@ -94,7 +93,7 @@ NAME::~NAME()
 	std::cout << "NAME destructor" << std::endl;
 }
 
-NAME&	NAME::operator=(const NAME& other)
+NAME&	NAME::operator=(const NAME &other)
 {
 	std::cout << "NAME assignation operator from " << other._name << std::endl;
 	this->_name = other._name;
@@ -105,7 +104,6 @@ NAME&	NAME::operator=(const NAME& other)
 //void	NAME::get_()
 //void	NAME::()
 //void	NAME::_()
-
 EOF
 	sed "s/NAME/$CLASSNAME/g" NAME.cpp > $CLASSNAME.cpp
 	rm NAME.cpp
