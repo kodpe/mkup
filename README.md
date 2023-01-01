@@ -39,5 +39,5 @@ mkup  -c, --class <name>
 
 #### version
 ```
-mkup.22.12.24
+mkup.23.01.01
 ```
