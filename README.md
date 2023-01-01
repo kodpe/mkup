@@ -21,6 +21,7 @@ mkup [DIRECTORY]
 ```
 mkup  -c, --class <name>...
 # Create a cpp canonical class files.
+# Can create multiple classes: <name1> <name2> ...
 ```
 ```
 mkup [OPTION]... [DIRECTORY]
