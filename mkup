@@ -260,17 +260,6 @@ function	mkup_usage() {
 	echo
 	echo "Update or create a makefile"
 	echo
-	echo "NOTES"
-	echo "    <> The compilation command used is:"
-	echo "       '$COMPILER'"
-	echo
-	echo "    <> If DIRECTORY isnt specified, default DIRECTORY is '.'"
-	echo
-	echo "    <> The makefile uses two mkup tokens like this one:"
-	echo "       '#-mkup-auto-sources ...',"
-	echo "       which contain all the source files,"
-	echo "       for safety makefiles without keys will be ignored."
-	echo
 	echo "OPTIONS"
 	echo "    -h, --help"
 	echo "           Print this help and exit."
@@ -316,8 +305,19 @@ function	mkup_usage() {
 	echo
 	echo "     verbose : display makefile parameters"
 	echo
+	echo "NOTES"
+	echo "    <> The compilation command used is:"
+	echo "       '$COMPILER'"
+	echo
+	echo "    <> If DIRECTORY isnt specified, default DIRECTORY is '.'"
+	echo
+	echo "    <> The makefile uses two mkup tokens like this one:"
+	echo "       '#-mkup-auto-sources ...',"
+	echo "       which contain all the source files,"
+	echo "       for safety makefiles without keys will be ignored."
+	echo
 	echo "VERSION"
-	echo "    mkup.23.01.01+"
+	echo "    mkup.23.01.02"
 	echo
 	echo "AUTHOR"
 	echo "    @Kodp sloquet@student.42.fr"
