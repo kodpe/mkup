@@ -22,6 +22,9 @@ mkup [DIRECTORY]
 mkup  -c, --class <name>...
 # Create a cpp canonical class files.
 ```
+```
+mkup [OPTION]... [DIRECTORY]
+```
 
 #### version
 ```
