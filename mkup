@@ -6,7 +6,7 @@
 SRC_DIR="." #L6
 EXTENSION=".cpp" #L7
 COMPILER="c++ -Wall -Werror -Wextra -std=c++98" #L8
-EXEC_NAME="program_name" #L9
+EXEC_NAME="exec_name" #L9
 
 #SRC_DIR="src"		# /!\ DO NOT CHANGE LINE NUMBER
 #EXTENSION=".cpp"	# /!\ DO NOT CHANGE LINE NUMBER
@@ -16,6 +16,15 @@ EXEC_NAME="program_name" #L9
 MKUP_PATH="$HOME/.local/mkup"
 # mkup templates
 MKUP_TP_CPP="$HOME/.local/mkup_tp_makefile_cpp"
+
+################################################################################
+### MKUP UNINSTALL
+function	mkup_uninstall() {
+	cp "$HOME/.zshrc" "$HOME/.zshrc_mkup_backup"
+	sed -i '/mkup/d' "$HOME/.zshrc"
+	rm -r "$MKUP_PATH"
+	# rm -rf "$MKUP_PATH"
+}
 
 ################################################################################
 ### CLASS TEMPLATE CPP
@@ -266,6 +275,9 @@ function	usage() {
 	echo "           Change the default executable name and exit."
 	echo "           Actually is '$EXEC_NAME'"
 	echo
+	echo "    --uninstall"
+	echo "           Remove mkup from your computer."
+	echo
 	echo "MAKEFILE RULES"
 	echo "     all, clean, fclean, re"
 	echo
@@ -306,6 +318,12 @@ if [[ "$1" == "--class" || "$1" == "-c" ]]; then
 	for ((i = 2; i <= $#; i++)); do
 		create_class_cpp ${!i}
 	done
+	exit 0
+fi
+
+if [[ "$1" == "--uninstall" ]]; then
+	msg_info "mkup uninstall done"
+	mkup_uninstall
 	exit 0
 fi
 
@@ -392,7 +410,6 @@ FINDPATH="$MAKEPATH/$SRC_DIR/"
 # echo "MAKEFILE :$MAKEFILE"
 # DEPTH=$(tr -dc '/' <<< $MAKEPATH | wc -c)
 #echo $DEPTH
-
 
 ################################################################################
 ### AUTO ALIAS SETUP
