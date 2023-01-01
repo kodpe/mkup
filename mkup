@@ -6,10 +6,12 @@
 SRC_DIR="." #L6
 EXTENSION=".cpp" #L7
 COMPILER="c++ -Wall -Werror -Wextra -std=c++98" #L8
+EXEC_NAME="program_name" #L9
 
 #SRC_DIR="src"		# /!\ DO NOT CHANGE LINE NUMBER
 #EXTENSION=".cpp"	# /!\ DO NOT CHANGE LINE NUMBER
 #COMMAND="c++ -Wall -Werror -Wextra -std=c++98" # /!\ DO NOT CHANGE LINE NB 8
+#XEC_NAME="program_name" # /!\ DO NOT CHANGE LINE NUMBER #L9
 
 MKUP_PATH="$HOME/.local/mkup"
 # mkup templates
@@ -20,7 +22,7 @@ MKUP_TP_CPP="$HOME/.local/mkup_tp_makefile_cpp"
 function create_class_cpp() {
 	local SNAME="MKUP"
 	local CLASSNAME="$1"
-	local CLASSNAME_UP="${1^^}_H"
+	local CLASSNAME_UP="${1^^}_CLASS_HPP"
 
 	if [[ -z $CLASSNAME ]]; then
 		echo "$SNAME:ERROR:need an argument for the class name"
@@ -41,8 +43,8 @@ function create_class_cpp() {
 	echo "$SNAME:create a class '$CLASSNAME' ..."
 
 	cat << EOF > NAME.hpp
-#ifndef NAME_H
-# define NAME_H
+#ifndef NAME_CLASS_HPP
+# define NAME_CLASS_HPP
 
 #include <iostream>
 #include <string>
@@ -50,61 +52,58 @@ function create_class_cpp() {
 class NAME
 {
 	public:
-		NAME (void);
-		NAME (/* TODO constructor with arguments */);
-   	   ~NAME (void);
-		// NAME (const NAME&);					/* recopy constructor	*/
-		// NAME &operator=(const NAME&); 		/* affectation operator */
-
-		/* accesseurs et mutateurs (setter and getter) */
-
-		/* méthodes publiques */
+		NAME ();
+		NAME (const std::string& name);
+		NAME (const NAME& other);
+   	   ~NAME ();
+		NAME&	operator=(const NAME& other);
 
 	private:
-		/* variables _var */
-
-		/* méthodes privées _func */
-
-	// protected:
-
+		std::string		_name;
+	protected:
 };
 
-#endif /* NAME_H */
+#endif /* NAME_CLASS_HPP */
 
 EOF
-	sed "s/NAME_H/$CLASSNAME_UP/g" NAME.hpp > $CLASSNAME.hpp
+	sed "s/NAME_CLASS_HPP/$CLASSNAME_UP/g" NAME.hpp > $CLASSNAME.hpp
 	sed -i "s/NAME/$CLASSNAME/g" $CLASSNAME.hpp
 	rm NAME.hpp
 
 	cat << EOF > NAME.cpp
 #include "NAME.hpp"
 
-NAME::NAME(void)
+NAME::NAME() : _name("default")
 {
+	std::cout << "NAME default constructor" << std::endl;
 }
 
-NAME::NAME(/* TODO constructor with arguments */)
+NAME::NAME(const std::string& name) : _name(name)
 {
+	std::cout << "NAME constructor" << std::endl;
 }
 
-NAME::~NAME(void)
+NAME::NAME(const NAME& other)
 {
+	std::cout << "NAME copy constructor from " << other._name << std::endl;
+	*this = other;
 }
 
-/**
- * accesseurs et mutateurs (setter and getter)
- */
+NAME::~NAME()
+{
+	std::cout << "NAME destructor" << std::endl;
+}
+
+NAME&	NAME::operator=(const NAME& other)
+{
+	std::cout << "NAME assignation operator from " << other._name << std::endl;
+	this->_name = other._name;
+	return *this;
+}
+
 //void	NAME::set_()
 //void	NAME::get_()
-
-/**
- * public methods
- */
 //void	NAME::()
-
-/**
- * private methods
- */
 //void	NAME::_()
 
 EOF
@@ -134,7 +133,7 @@ OBJ			=	\$(addprefix \$(OBJ_DIR)/, \$(SRC_LIST:\$(EXTENSION)=.o))
 CC			=	@c++
 CFLAGS		= 	-Wall -Werror -Wextra -std=c++98 -MMD -I \$(INC_DIR)
 
-RM			= 	@rm -rf
+RM			= 	@rm -rf 2>/dev/null
 NOPR		= 	--no-print-directory
 
 #colors
@@ -144,7 +143,7 @@ cg			=	"\033[32m"
 cb			=	"\033[34m"
 cp			=	"\033[35m"
 
-NAME		= 	program_name
+NAME		= 	"$EXEC_NAME"
 
 ######################################################################
 \$(OBJ_DIR)/%.o:\$(SRC_DIR)/%.cpp
@@ -162,7 +161,7 @@ all:		\$(NAME)
 
 clean:
 			\$(RM) \$(OBJ_DIR)
-			\$(RM) \$(NAME).d
+			\$(RM) \$(NAME).d a.d
 			@echo -n \$(cr)
 			@echo \$(OBJ) | tr ' ' '\n'
 			@echo -n \$(cw)
@@ -226,7 +225,8 @@ function	msg_done() { echo -e "MKUP:$1" ; }
 function	msg_warn() { echo -e "MKUP:$1" ; }
 function	msg_info() { echo -e "MKUP:$1" ; }
 function	usage() {
-	echo "Usage: mkup [OPTION] [DIRECTORY]"
+	echo "Usage: mkup [OPTION]... [DIRECTORY]"
+	echo "       mkup -c CLASSNAME..."
 	echo
 	echo "Update or create a makefile"
 	echo
@@ -245,9 +245,17 @@ function	usage() {
 	echo "    -h, --help"
 	echo "           Print this help and exit."
 	echo
+	echo "    -n, --name <exec_name>"
+	echo "           Specify the executable name."
+	echo
 	echo "    -s, --source-dir <src_dir>"
 	echo "           Specify the source directory, subfolders allowed."
 	echo
+	echo "    -c, --class <name> ..."
+	echo "           Create a cpp canonical class <name> and exit."
+	echo "           Can create multiple classes: <name1> <name2> ..."
+	echo
+	echo "SCRIPT OPTIONS"
 	echo "    --default-source-dir <src_dir>"
 	echo "           Change the default source directory and exit."
 	echo "           Actually is 'DIRECTORY/$SRC_DIR'"
@@ -256,9 +264,9 @@ function	usage() {
 	echo "           Change the default extension and exit."
 	echo "           Actually is '$EXTENSION'"
 	echo
-	echo "    -c, --class <name> ..."
-	echo "           Create a cpp class <name> and exit."
-	echo "           Can create multiple classes: <name1> <name2> ..."
+	echo "    --default-name <exec_name>"
+	echo "           Change the default executable name and exit."
+	echo "           Actually is '$EXEC_NAME'"
 	echo
 	echo "MAKEFILE RULES"
 	echo "     all, clean, fclean, re"
@@ -273,7 +281,7 @@ function	usage() {
 	echo "     verbose : display makefile parameters"
 	echo
 	echo "VERSION"
-	echo "    mkup.22.12.24"
+	echo "    mkup.23.01.01"
 	echo
 	echo "AUTHOR"
 	echo "    @Kodp sloquet@student.42.fr"
@@ -286,6 +294,9 @@ function	usage() {
 ARG_DIRECTORY=$1
 if [[ "${1:0:1}" == "-"  ]]; then
 	ARG_DIRECTORY=$3
+	if [[ "${3:0:1}" == "-"  ]]; then
+		ARG_DIRECTORY=$5
+	fi
 fi
 
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
@@ -318,9 +329,28 @@ fi
 #	exit 0
 #fi
 
+if [[ "$1" == "--default-name" ]]; then
+	msg_info "default-name set on '$2'"
+	sed -i "9s+.*+EXEC_NAME=\"$2\" #L9+" $0
+	exit 0
+fi
+
 if [[ "${1:0:1}" == "-" ]]; then
 	if [[ "$1" == "--source-dir" || "$1" == "-s" ]]; then
 		SRC_DIR="$2"
+	elif [[ "$1" == "--name" || "$1" == "-n" ]]; then
+		EXEC_NAME="$2"
+	else
+		usage
+		exit 1
+	fi
+fi
+
+if [[ "${3:0:1}" == "-" ]]; then
+	if [[ "$3" == "--source-dir" || "$3" == "-s" ]]; then
+		SRC_DIR="$4"
+	elif [[ "$3" == "--name" || "$3" == "-n" ]]; then
+		EXEC_NAME="$4"
 	else
 		usage
 		exit 1
