@@ -32,7 +32,7 @@ if [[ "$0" != $MKUP_PATH ]]; then
 fi
 
 function	mkup_update() {
-	echo "\033[33mMKUP:mkup update...\033[0m"
+	echo -e "\033[33mMKUP:mkup update...\033[0m"
 	git clone git@github.com:kodpe/mkup.git /tmp/mkup_update_08231 >/dev/null 2>&1
 	cp /tmp/mkup_update_08231/mkup /tmp  && rm -rf /tmp/mkup_update_08231
 	/tmp/mkup
