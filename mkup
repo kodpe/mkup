@@ -12,6 +12,7 @@ EXEC_NAME="exec_name" #L9
 #EXTENSION=".cpp"	# /!\ DO NOT CHANGE LINE NUMBER
 #COMMAND="c++ -Wall -Werror -Wextra -std=c++98" # /!\ DO NOT CHANGE LINE NB 8
 #XEC_NAME="program_name" # /!\ DO NOT CHANGE LINE NUMBER #L9
+AUTO_UPDATE=20 	# /!\ DO NOT CHANGE LINE NUMBER 15
 
 ################################################################################
 MKUP_PATH="$HOME/.local/mkup"
@@ -31,14 +32,22 @@ if [[ "$0" != $MKUP_PATH ]]; then
 fi
 
 function	mkup_update() {
+	echo "\033[33mMKUP:mkup update...\033[0m"
 	git clone git@github.com:kodpe/mkup.git /tmp/mkup_update_08231 >/dev/null 2>&1
 	cp /tmp/mkup_update_08231/mkup /tmp  && rm -rf /tmp/mkup_update_08231
 	/tmp/mkup
 	if [[ "$0" != $MKUP_PATH ]]; then
 		rm $0
 	fi
-	echo "MKUP:mkup update done"
 }
+
+if [[ $AUTO_UPDATE -eq 0 ]]; then
+	mkup_update
+	exit 0
+else
+	AUTO_UPDATE=$(( $AUTO_UPDATE - 1 ))
+	sed -i "15s+.*+AUTO_UPDATE=$AUTO_UPDATE #L15+" $0
+fi
 
 ################################################################################
 ### CLASS TEMPLATE CPP
