@@ -250,9 +250,9 @@ EOF
 
 ################################################################################
 ### UTILS FUNCTIONS
-function	msg_fail() { echo -e "MKUP:ERROR:$1" ; }
+function	msg_fail() { echo -e "\033[31mMKUP:ERROR:$1\033[0m" ; }
 function	msg_done() { echo -e "MKUP:$1" ; }
-function	msg_warn() { echo -e "MKUP:$1" ; }
+function	msg_warn() { echo -e "\033[33mMKUP:$1\033[0m" ; }
 function	msg_info() { echo -e "MKUP:$1" ; }
 function	mkup_usage() {
 	echo "Usage: mkup [OPTION]... [DIRECTORY]"
