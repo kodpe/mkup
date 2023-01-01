@@ -14,27 +14,12 @@ mkup
 # Update or create a makefile in your current folder.
 ```
 ```
-mkup [DIRECTORY]
+mkup [OPTION]... [DIRECTORY]
 # Otherwise you can specify a relative directory path,
 # the default source directory is 'DIRECTORY/src'
-```
 
-#### options
-```
-mkup  -s, --source-dir <src_dir> [DIRECTORY]
-# Specify the source directory, subfolders allowed.
-```
-```
-mkup --default-source-dir <src_dir>
-# Change the default source directory.
-```
-```
-mkup --default-extension <.extension>
-# Change the default extension.
-```
-```
-mkup  -c, --class <name>
-# Create a cpp class files.
+mkup  -c, --class <name>...
+# Create a cpp canonical class files.
 ```
 
 #### version
