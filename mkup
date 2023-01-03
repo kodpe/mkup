@@ -12,7 +12,8 @@ EXEC_NAME="exec_name" #L9
 #EXTENSION=".cpp"	# /!\ DO NOT CHANGE LINE NUMBER
 #COMMAND="c++ -Wall -Werror -Wextra -std=c++98" # /!\ DO NOT CHANGE LINE NB 8
 #XEC_NAME="program_name" # /!\ DO NOT CHANGE LINE NUMBER #L9
-AUTO_UPDATE=20 	# /!\ DO NOT CHANGE LINE NUMBER 15
+AUTO_UPDATE=12 #L15
+MKUP_VERSION="mkup.23.01.03+"
 
 ################################################################################
 MKUP_PATH="$HOME/.local/mkup"
@@ -48,6 +49,27 @@ else
 	AUTO_UPDATE=$(( $AUTO_UPDATE - 1 ))
 	sed -i "15s+.*+AUTO_UPDATE=$AUTO_UPDATE #L15+" $0
 fi
+
+################################################################################
+### MAIN CPP
+function create_main_cpp() {
+	if [[ -f "main.cpp" ]]; then
+		echo "$SNAME:ERROR:main.cpp already exist"
+		return 1
+	fi
+	echo "$SNAME:'$PWD'"
+	echo "$SNAME:create main.cpp ..."
+
+	cat << EOF > main.cpp
+#include <iostream>
+
+int	main(int ac, char **argv, char **env)
+{
+	return 0;
+}
+EOF
+	echo "$SNAME:new main.cpp done!"
+}
 
 ################################################################################
 ### CLASS TEMPLATE CPP
@@ -274,6 +296,9 @@ function	mkup_usage() {
 	echo "           Create a cpp canonical class <name> and exit."
 	echo "           Can create multiple classes: <name1> <name2> ..."
 	echo
+	echo "    -m, --main"
+	echo "           Create a cpp basic main and exit."
+	echo
 	echo "SCRIPT OPTIONS"
 	echo "    --default-source-dir <src_dir>"
 	echo "           Change the default source directory and exit."
@@ -292,6 +317,9 @@ function	mkup_usage() {
 	echo
 	echo "    -u, --update"
 	echo "           Get the latest mkup version."
+	echo
+	echo "    -v, --version"
+	echo "           Display version and exit."
 	echo
 	echo "MAKEFILE RULES"
 	echo "     all, clean, fclean, re"
@@ -317,7 +345,7 @@ function	mkup_usage() {
 	echo "       for safety makefiles without keys will be ignored."
 	echo
 	echo "VERSION"
-	echo "    mkup.23.01.04"
+	echo "    $MKUP_VERSION"
 	echo
 	echo "AUTHOR"
 	echo "    @Kodp sloquet@student.42.fr"
@@ -351,6 +379,16 @@ if [[ "$1" == "--class" || "$1" == "-c" ]]; then
 	for ((i = 2; i <= $#; i++)); do
 		create_class_cpp ${!i}
 	done
+	exit 0
+fi
+
+if [[ "$1" == "--main" || "$1" == "-m" ]]; then
+	create_main_cpp
+	exit 0
+fi
+
+if [[ "$1" == "--version" || "$1" == "-v" ]]; then
+	echo $MKUP_VERSION
 	exit 0
 fi
 
