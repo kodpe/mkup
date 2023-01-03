@@ -84,9 +84,9 @@ function create_class_cpp() {
 class NAME
 {
 	public:
-		NAME ();
-		NAME (const std::string &name);
-		NAME (const NAME &other);
+		NAME();
+		NAME(const std::string &name);
+		NAME(const NAME &other);
    	   ~NAME ();
 		NAME & operator=(const NAME &other);
 
@@ -116,7 +116,7 @@ NAME::NAME(const std::string &name) : _name(name)
 
 NAME::NAME(const NAME &other)
 {
-	std::cout << "NAME copy constructor from " << other._name << std::endl;
+	std::cout << "NAME copy constructor" << std::endl;
 	*this = other;
 }
 
@@ -127,7 +127,7 @@ NAME::~NAME()
 
 NAME&	NAME::operator=(const NAME &other)
 {
-	std::cout << "NAME assignation operator from " << other._name << std::endl;
+	std::cout << "NAME assignation operator" << std::endl;
 	this->_name = other._name;
 	return *this;
 }
