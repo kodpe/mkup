@@ -326,7 +326,7 @@ function	mkup_usage() {
 
 function	usage() {
 	mkup_usage > /tmp/mkup_man
-	more /tmp/mkup_man
+	less /tmp/mkup_man
 	rm -f /tmp/mkup_man
 }
 
