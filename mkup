@@ -317,7 +317,7 @@ function	mkup_usage() {
 	echo "       for safety makefiles without keys will be ignored."
 	echo
 	echo "VERSION"
-	echo "    mkup.23.01.03+"
+	echo "    mkup.23.01.04"
 	echo
 	echo "AUTHOR"
 	echo "    @Kodp sloquet@student.42.fr"
