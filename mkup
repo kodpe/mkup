@@ -12,7 +12,7 @@ EXEC_NAME="exec_name" #L9
 #EXTENSION=".cpp"	# /!\ DO NOT CHANGE LINE NUMBER
 #COMMAND="c++ -Wall -Werror -Wextra -std=c++98" # /!\ DO NOT CHANGE LINE NB 8
 #XEC_NAME="program_name" # /!\ DO NOT CHANGE LINE NUMBER #L9
-AUTO_UPDATE=12 #L15
+AUTO_UPDATE=24 #L15
 MKUP_VERSION="mkup.23.01.03+"
 
 ################################################################################
